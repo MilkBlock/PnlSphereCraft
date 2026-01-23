@@ -1,0 +1,5 @@
+{
+  "name": "Wallet PnL Blob Battle",
+  "description": "A Remotion-powered animation showing wallet PnL performance in the style of 'Battle of Balls' (球球大作战), featuring growing blobs, dynamic leaderboards, and interactive profit eating.",
+  "requestFramePermissions": []
+}
