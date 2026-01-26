@@ -1,9 +1,11 @@
 
-import React, { useState } from 'react';
-import { Player } from '@remotion/player';
+import React, { useState, Suspense } from 'react';
 import { WalletBattleScene } from './remotion/Composition';
 import { VIDEO_WIDTH, VIDEO_HEIGHT, FPS, DURATION_IN_FRAMES } from './constants';
 import { Play, Pause, RotateCcw, Download, Share2 } from 'lucide-react';
+
+// 动态导入Remotion Player组件，避免SSR问题
+const Player = React.lazy(() => import('@remotion/player').then(mod => ({ default: mod.Player })));
 
 const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -31,20 +33,22 @@ const App: React.FC = () => {
         {/* Player Section */}
         <div className="lg:col-span-3 space-y-6">
           <div className="relative group rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 bg-slate-900 aspect-video">
-            <Player
-              component={WalletBattleScene}
-              durationInFrames={DURATION_IN_FRAMES}
-              compositionWidth={VIDEO_WIDTH}
-              compositionHeight={VIDEO_HEIGHT}
-              fps={FPS}
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-              controls
-              autoPlay={false}
-              loop
-            />
+            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-white">加载播放器...</div>}>
+              <Player
+                component={WalletBattleScene}
+                durationInFrames={DURATION_IN_FRAMES}
+                compositionWidth={VIDEO_WIDTH}
+                compositionHeight={VIDEO_HEIGHT}
+                fps={FPS}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
+                controls
+                autoPlay={false}
+                loop
+              />
+            </Suspense>
           </div>
 
           {/* Player Controls Bar */}

@@ -69,12 +69,12 @@ export const WalletBattleScene: React.FC = () => {
   }, []);
 
   const simulation = useMemo(() => {
-    const history: Array<{ 
-      wallets: any[], 
-      dots: {id: string, pos: {x: number, y: number}, color: string}[],
-      rewards: Array<{id: string, x: number, y: number, value: number, frame: number}> 
+    const history: Array<{
+      wallets: any[],
+      dots: { id: string, pos: { x: number, y: number }, color: string }[],
+      rewards: Array<{ id: string, x: number, y: number, value: number, frame: number }>
     }> = [];
-    
+
     let heroPos = { ...initialData.wallets[0].initialPos };
     let heroPnL = initialData.wallets[0].initialPnL;
     let eatenDotIds = new Set<string>();
@@ -83,10 +83,10 @@ export const WalletBattleScene: React.FC = () => {
 
     for (let f = 0; f <= 300; f++) {
       const heroSize = (100 * (1 + heroPnL / 4000)) / 2;
-      
+
       // Speed inversely proportional to size (min 3, max 12)
       const baseSpeed = Math.max(3, 12 - (heroPnL / 1500));
-      
+
       const visibleDots = initialData.dots
         .filter(d => !eatenDotIds.has(d.id))
         .map(d => ({ ...d, currentPos: getDotPosition(d, f) }));
@@ -157,7 +157,7 @@ export const WalletBattleScene: React.FC = () => {
   return (
     <AbsoluteFill className="bg-black">
       <Background />
-      
+
       {/* Profit Dots */}
       {state.dots.map(dot => (
         <div
@@ -202,9 +202,9 @@ export const WalletBattleScene: React.FC = () => {
           <span className="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded font-bold">ONLINE</span>
         </div>
         <div className="space-y-2">
-          {[...state.wallets].sort((a,b) => b.pnl - a.pnl).map((w, idx) => (
-            <div 
-              key={w.id} 
+          {[...state.wallets].sort((a, b) => b.pnl - a.pnl).map((w, idx) => (
+            <div
+              key={w.id}
               className={`flex items-center justify-between p-2 rounded-xl transition-all ${w.id === 'w-0' ? 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)] scale-105' : 'opacity-80'}`}
             >
               <div className="flex items-center gap-3">
@@ -224,3 +224,4 @@ export const WalletBattleScene: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
