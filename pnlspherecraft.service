@@ -1,0 +1,15 @@
+[Unit]
+Description=PnlSphereCraft Node Server
+After=network.target
+
+[Service]
+Type=simple
+User=mineral
+WorkingDirectory=/home/mineral/HkRepos/PnlSphereCraft
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+Environment=PORT=3001
+
+[Install]
+WantedBy=multi-user.target
