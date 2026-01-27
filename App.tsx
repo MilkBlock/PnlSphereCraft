@@ -177,8 +177,9 @@ const App: React.FC = () => {
             <div className="flex-grow-[2] relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-200"></div>
               <div className="relative flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden h-12">
-                <div className="pl-4 text-slate-400">
+                <div className="pl-4 text-slate-400 flex items-center gap-2">
                   <Wallet size={20} />
+                  <span className="text-[10px] font-bold text-indigo-400 px-1.5 py-0.5 bg-indigo-500/10 rounded border border-indigo-500/20 uppercase tracking-wider">Solana</span>
                 </div>
                 <input
                   type="text"
