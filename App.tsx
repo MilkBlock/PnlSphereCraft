@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Player, PlayerRef } from '@remotion/player';
-import { Search, Wallet, AlertCircle, PlayCircle, Twitter, Video, Check, Loader2, Camera } from 'lucide-react';
+import { Search, Wallet, AlertCircle, PlayCircle, Twitter, Video, Check, Loader2, Camera, Download } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import gifshot from 'gifshot';
 import { fetchWalletHistory } from './services/api';
 import { WalletHistoryItem } from './types';
 import { AgarComposition } from './components/AgarComposition';
@@ -19,16 +20,17 @@ const App: React.FC = () => {
   const [showWallet, setShowWallet] = useState(true);
   const [data, setData] = useState<WalletHistoryItem[] | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
   const [isSavingImage, setIsSavingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const playerRef = useRef<PlayerRef>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
 
   const handleFetch = useCallback(async () => {
     if (!walletInput.trim()) return;
-    
+
     setLoading(true);
     setError(null);
     setData(null);
@@ -55,67 +57,61 @@ const App: React.FC = () => {
     }
   };
 
-  const handleRecord = async () => {
-    if (!data) return;
+  const handleExportGif = async () => {
+    if (!data || !playerRef.current || !playerContainerRef.current) return;
+
+    setIsExporting(true);
+    setExportProgress(0);
+
+    // Pause player if it's playing
+    playerRef.current.pause();
 
     try {
-      // Prompt user to select screen
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { displaySurface: 'browser' },
-        audio: false,
-      });
+      const frames: string[] = [];
+      const totalFrames = 450;
+      const step = 6; // Extract every 6th frame (5fps) to keep it manageable
 
-      setIsRecording(true);
+      for (let frame = 0; frame < totalFrames; frame += step) {
+        playerRef.current.seekTo(frame);
+        // Wait a bit for the player to render the frame
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-      const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9') 
-        ? 'video/webm; codecs=vp9' 
-        : 'video/webm';
+        const dataUrl = await toPng(playerContainerRef.current, {
+          cacheBust: true,
+          pixelRatio: 0.8, // Lower resolution for GIF to save memory and processing time
+          backgroundColor: '#0f172a',
+        });
 
-      const mediaRecorder = new MediaRecorder(stream, { mimeType });
-      const chunks: BlobPart[] = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `wallet-history-${walletInput}.webm`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        // Stop all tracks to release camera/screen
-        stream.getTracks().forEach(track => track.stop());
-        setIsRecording(false);
-      };
-
-      // Start recording
-      mediaRecorder.start();
-
-      // Reset and play video from start
-      if (playerRef.current) {
-        playerRef.current.seekTo(0);
-        playerRef.current.play();
+        frames.push(dataUrl);
+        setExportProgress(Math.round((frame / totalFrames) * 100));
       }
 
-      // Stop automatically after 15 seconds (plus small buffer)
-      setTimeout(() => {
-        if (mediaRecorder.state === 'recording') {
-          mediaRecorder.stop();
+      gifshot.createGIF({
+        images: frames,
+        gifWidth: 640,
+        gifHeight: 360,
+        interval: 0.2, // 5 fps (1/5)
+        numFrames: frames.length,
+        frameDuration: 2, // 100ms * 2 = 200ms per frame
+      }, (obj: any) => {
+        if (!obj.error) {
+          const link = document.createElement('a');
+          link.href = obj.image;
+          link.download = `wallet-history-${walletInput}.gif`;
+          link.click();
+        } else {
+          console.error("GIF formation error:", obj.error);
+          alert("Failed to create GIF. Try with a shorter animation or fewer tokens.");
         }
-        if (playerRef.current) {
-          playerRef.current.pause();
-        }
-      }, 15000 + 500); // 15s + 0.5s buffer
+        setIsExporting(false);
+        setExportProgress(0);
+      });
 
     } catch (err) {
-      console.error("Recording cancelled or failed", err);
-      setIsRecording(false);
+      console.error("GIF Export failed", err);
+      setError("GIF Export failed. Please try again.");
+      setIsExporting(false);
+      setExportProgress(0);
     }
   };
 
@@ -172,11 +168,11 @@ const App: React.FC = () => {
       </header>
 
       <main className="flex-grow flex flex-col items-center p-4 sm:p-8 gap-8">
-        
+
         {/* Search Section */}
         <div className="w-full max-w-4xl flex flex-col gap-4">
           <div className="flex flex-col md:flex-row gap-4">
-            
+
             {/* Wallet Input */}
             <div className="flex-grow-[2] relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-200"></div>
@@ -217,7 +213,7 @@ const App: React.FC = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleFetch}
-                disabled={loading || isRecording || isSavingImage}
+                disabled={loading || isExporting || isSavingImage}
                 className="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 whitespace-nowrap"
               >
                 {loading ? (
@@ -231,18 +227,18 @@ const App: React.FC = () => {
               </button>
 
               <button
-                onClick={handleRecord}
-                disabled={!data || isRecording || isSavingImage}
-                className={`h-12 px-4 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 border whitespace-nowrap ${isRecording ? 'bg-red-500/20 border-red-500 text-red-400' : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700'}`}
+                onClick={handleExportGif}
+                disabled={!data || isExporting || isSavingImage}
+                className={`h-12 px-4 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 border whitespace-nowrap ${isExporting ? 'bg-indigo-500/20 border-indigo-500 text-indigo-400' : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700'}`}
               >
-                {isRecording ? (
+                {isExporting ? (
                   <>
                     <Loader2 size={18} className="animate-spin" />
-                    <span>{t.recording}</span>
+                    <span>{exportProgress}%</span>
                   </>
                 ) : (
                   <>
-                    <Video size={18} />
+                    <Download size={18} />
                     <span>{t.recordVideo}</span>
                   </>
                 )}
@@ -250,7 +246,7 @@ const App: React.FC = () => {
 
               <button
                 onClick={handleSaveImage}
-                disabled={!data || isRecording || isSavingImage}
+                disabled={!data || isExporting || isSavingImage}
                 className="h-12 px-4 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 border border-slate-700 whitespace-nowrap"
               >
                 {isSavingImage ? (
@@ -269,16 +265,16 @@ const App: React.FC = () => {
               <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${showWallet ? 'bg-indigo-500 border-indigo-500' : 'border-slate-600 bg-slate-800'}`}>
                 {showWallet && <Check size={12} className="text-white" />}
               </div>
-              <input 
-                type="checkbox" 
-                checked={showWallet} 
-                onChange={(e) => setShowWallet(e.target.checked)} 
+              <input
+                type="checkbox"
+                checked={showWallet}
+                onChange={(e) => setShowWallet(e.target.checked)}
                 className="hidden"
               />
               <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">{t.showWallet}</span>
             </label>
           </div>
-          
+
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg flex items-start gap-2 text-sm break-all">
               <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
@@ -290,7 +286,7 @@ const App: React.FC = () => {
         {/* Visualization Area */}
         <div className="w-full max-w-6xl flex-grow flex flex-col items-center justify-center min-h-[400px]">
           {data ? (
-            <div 
+            <div
               ref={playerContainerRef}
               className="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden shadow-2xl border border-slate-800 relative group"
             >
