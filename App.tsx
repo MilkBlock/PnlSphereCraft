@@ -292,7 +292,7 @@ const App: React.FC = () => {
             >
               <Player
                 ref={playerRef}
-                component={AgarComposition}
+                component={AgarComposition as any}
                 inputProps={{ data, xHandle, showWallet, walletAddress: displayedWallet, language }}
                 durationInFrames={300} // 10 seconds at 30fps
                 fps={30}
