@@ -24,14 +24,14 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
   const { width, height, fps } = useVideoConfig();
   const t = translations[language];
 
-  // --- Animation Timing Configuration (Total 450 frames / 15s) ---
-  const DRIFT_DURATION = 120; // 4 seconds of chaos
-  const AGGREGATE_DURATION = 90; // 3 seconds to form the ball
-  const ZOOM_DURATION = 60; // 2 seconds to pan/zoom
+  // --- Animation Timing Configuration (Total 300 frames / 10s) ---
+  const DRIFT_DURATION = 60; // 2 seconds of chaos
+  const AGGREGATE_DURATION = 75; // 2.5 seconds to form the ball
+  const ZOOM_DURATION = 45; // 1.5 seconds to pan/zoom
 
   const startAggregation = DRIFT_DURATION;
   const startZoom = startAggregation + AGGREGATE_DURATION;
-  const showStatsFrame = startZoom + 20;
+  const showStatsFrame = startZoom + 15;
 
   // --- Data Processing & Layout Calculation ---
   const { balls, stats } = useMemo(() => {

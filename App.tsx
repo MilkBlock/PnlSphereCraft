@@ -68,7 +68,7 @@ const App: React.FC = () => {
 
     try {
       const frames: string[] = [];
-      const totalFrames = 450;
+      const totalFrames = 300;
       const step = 6; // Extract every 6th frame (5fps) to keep it manageable
 
       for (let frame = 0; frame < totalFrames; frame += step) {
@@ -123,7 +123,7 @@ const App: React.FC = () => {
     try {
       // Pause and seek to the last frame (450 frames total, so index 449)
       playerRef.current.pause();
-      playerRef.current.seekTo(449);
+      playerRef.current.seekTo(299);
 
       // Wait a moment for the renderer to catch up and external images to load
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -294,7 +294,7 @@ const App: React.FC = () => {
                 ref={playerRef}
                 component={AgarComposition}
                 inputProps={{ data, xHandle, showWallet, walletAddress: displayedWallet, language }}
-                durationInFrames={450} // 15 seconds at 30fps
+                durationInFrames={300} // 10 seconds at 30fps
                 fps={30}
                 compositionWidth={1280}
                 compositionHeight={720}
