@@ -8,7 +8,7 @@ import { WalletHistoryItem } from './types';
 import { AgarComposition } from './components/AgarComposition';
 import { getBrowserLanguage, translations, Language } from './utils/i18n';
 
-const DEFAULT_WALLET = 'DADaLQ71Dc8bjvJpbj4wF1Lk7Lvg5ZS4nirGmtbgVB9a';
+const DEFAULT_WALLET = '4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk';
 
 const App: React.FC = () => {
   const [language] = useState<Language>(getBrowserLanguage());
