@@ -13,7 +13,7 @@ interface BallProps {
 export const Ball: React.FC<BallProps> = ({ item, x, y, size, scale }) => {
   const roi = parseFloat(item.roi);
   const isPositive = roi >= 0;
-  
+
   // Determine border color based on ROI
   const borderColor = isPositive ? '#4ade80' : '#f87171'; // green-400 : red-400
 
@@ -40,22 +40,23 @@ export const Ball: React.FC<BallProps> = ({ item, x, y, size, scale }) => {
     >
       {/* Full Skin Image - Agar.io style */}
       {item.icon ? (
-        <Img 
-          src={item.icon} 
-          style={{ 
+        <Img
+          src={`https://corsproxy.io/?${encodeURIComponent(item.icon)}`}
+          crossOrigin="anonymous"
+          style={{
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '100%', 
-            height: '100%', 
+            width: '100%',
+            height: '100%',
             objectFit: 'cover',
           }}
-          onError={(e: any) => { e.target.style.display = 'none'; }}
+          onError={(e: any) => { e.currentTarget.style.display = 'none'; }}
         />
       ) : null}
 
       {/* Dark overlay to ensure text readability over the image */}
-      <div 
+      <div
         style={{
           position: 'absolute',
           inset: 0,
@@ -65,9 +66,9 @@ export const Ball: React.FC<BallProps> = ({ item, x, y, size, scale }) => {
 
       {/* Text Info */}
       <div className="relative z-10 text-center flex flex-col items-center justify-center pointer-events-none">
-        <span 
-          style={{ 
-            fontSize: `${Math.max(12, size * 0.18)}px`, 
+        <span
+          style={{
+            fontSize: `${Math.max(12, size * 0.18)}px`,
             fontWeight: '800',
             color: '#fff',
             textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 0 2px #000',
@@ -78,9 +79,9 @@ export const Ball: React.FC<BallProps> = ({ item, x, y, size, scale }) => {
         >
           {item.symbol}
         </span>
-        <span 
-          style={{ 
-            fontSize: `${Math.max(10, size * 0.14)}px`, 
+        <span
+          style={{
+            fontSize: `${Math.max(10, size * 0.14)}px`,
             color: isPositive ? '#86efac' : '#fca5a5',
             fontWeight: '700',
             textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 0 2px #000'

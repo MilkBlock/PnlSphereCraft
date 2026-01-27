@@ -28,7 +28,7 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
   const DRIFT_DURATION = 120; // 4 seconds of chaos
   const AGGREGATE_DURATION = 90; // 3 seconds to form the ball
   const ZOOM_DURATION = 60; // 2 seconds to pan/zoom
-  
+
   const startAggregation = DRIFT_DURATION;
   const startZoom = startAggregation + AGGREGATE_DURATION;
   const showStatsFrame = startZoom + 20;
@@ -78,7 +78,7 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
       const r2 = seededRandom(i * 456);
       const initialX = r1 * width;
       const initialY = r2 * height;
-      
+
       // Random velocity
       const speedX = (seededRandom(i * 789) - 0.5) * 3;
       const speedY = (seededRandom(i * 999) - 0.5) * 3;
@@ -86,11 +86,11 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
       // --- Layout 2: Spiral Cluster (Order) ---
       // Phyllotaxis spiral packing
       // Angle in radians (Golden Angle approx 2.4)
-      const angle = i * 2.4; 
+      const angle = i * 2.4;
       // Radius grows with index. 
       // We adjust the spacing factor (45) based on average ball size to prevent too much overlap
-      const radius = 45 * Math.sqrt(i); 
-      
+      const radius = 45 * Math.sqrt(i);
+
       const clusterX = (width / 2) + (radius * Math.cos(angle));
       const clusterY = (height / 2) + (radius * Math.sin(angle));
 
@@ -149,7 +149,7 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
     [0, 1],
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
   );
-  
+
   const statsSlide = interpolate(
     frame,
     [showStatsFrame, showStatsFrame + 20],
@@ -190,7 +190,7 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
           // Wrap logic for drift phase
           let driftX = ball.initialX + (ball.speedX * frame);
           let driftY = ball.initialY + (ball.speedY * frame);
-          
+
           // Floating effect
           const floatX = Math.sin((frame / fps) + ball.phase) * 10;
           const floatY = Math.cos((frame / fps) + ball.phase) * 10;
@@ -248,11 +248,12 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full blur opacity-75"></div>
               <Img
-                src={`https://unavatar.io/twitter/${xHandle}`}
+                src={`https://corsproxy.io/?${encodeURIComponent(`https://unavatar.io/twitter/${xHandle}`)}`}
+                crossOrigin="anonymous"
                 className="relative w-32 h-32 rounded-full border-4 border-slate-900 shadow-2xl object-cover bg-slate-800"
                 onError={(e: any) => {
                   // Fallback if image fails
-                  e.target.style.display = 'none';
+                  e.currentTarget.style.display = 'none';
                 }}
               />
             </div>
@@ -264,7 +265,7 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-6">
             {t.analysisTitle}
           </h2>
-          
+
           <div className="grid grid-cols-1 gap-6">
             {/* Total PnL */}
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -307,8 +308,8 @@ export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle,
               </div>
             </div>
 
-             {/* Total Volume */}
-             <div className="flex items-center justify-between">
+            {/* Total Volume */}
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-slate-400">
                 <TrendingDown className="w-6 h-6 text-orange-400" />
                 <span className="text-lg">{t.volume}</span>
