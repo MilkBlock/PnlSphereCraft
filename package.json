@@ -9,12 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@remotion/player": "^4.0.115",
+    "gifshot": "^0.4.5",
+    "html-to-image": "^1.11.11",
+    "lucide-react": "^0.300.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remotion": "^4.0.115",
-    "@remotion/player": "^4.0.115",
-    "lucide-react": "^0.300.0",
-    "html-to-image": "^1.11.11"
+    "remotion": "^4.0.115"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
