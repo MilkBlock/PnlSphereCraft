@@ -38,7 +38,7 @@ export const Ball: React.FC<BallProps> = ({ item, x, y, size, scale }) => {
         zIndex: Math.floor(size),
       }}
     >
-      {/* Full Skin Image - Agar.io style */}
+      {/* Full Skin Image - aurapnl.io style */}
       {item.icon ? (
         <Img
           src={`https://corsproxy.io/?${encodeURIComponent(item.icon)}`}

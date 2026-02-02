@@ -5,7 +5,7 @@ import { toPng } from 'html-to-image';
 import gifshot from 'gifshot';
 import { fetchWalletHistory } from './services/api';
 import { WalletHistoryItem } from './types';
-import { AgarComposition } from './components/AgarComposition';
+import { AurapnlIoComposition } from './components/AurapnlIoComposition';
 import { getBrowserLanguage, translations, Language } from './utils/i18n';
 
 const DEFAULT_WALLET = '4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk';
@@ -293,7 +293,7 @@ const App: React.FC = () => {
             >
               <Player
                 ref={playerRef}
-                component={AgarComposition as any}
+                component={AurapnlIoComposition as any}
                 inputProps={{ data, xHandle, showWallet, walletAddress: displayedWallet, language }}
                 durationInFrames={300} // 10 seconds at 30fps
                 fps={30}

@@ -2,7 +2,7 @@ export type Language = 'en' | 'zh';
 
 export const translations = {
   en: {
-    title: "Agar.io Wallet Visualizer",
+    title: "aurapnl.io Wallet Visualizer",
     poweredBy: "Powered by Remotion & Ant.fun API",
     placeholderWallet: "Solana Wallet Address...",
     placeholderX: "X Handle (Optional)",
@@ -24,7 +24,7 @@ export const translations = {
     tokens: "Tokens"
   },
   zh: {
-    title: "Agar.io 钱包可视化",
+    title: "aurapnl.io 钱包可视化",
     poweredBy: "由 Remotion & Ant.fun API 提供支持",
     placeholderWallet: "Solana 钱包地址...",
     placeholderX: "X (推特) 账号 (可选)",

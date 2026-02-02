@@ -5,7 +5,7 @@ import { Ball } from './Ball';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import { translations, Language } from '../utils/i18n';
 
-interface AgarCompositionProps {
+interface AurapnlIoCompositionProps {
   data: WalletHistoryItem[];
   xHandle?: string;
   showWallet?: boolean;
@@ -19,7 +19,7 @@ const seededRandom = (seed: number) => {
   return x - Math.floor(x);
 };
 
-export const AgarComposition: React.FC<AgarCompositionProps> = ({ data, xHandle, showWallet, walletAddress, language = 'en' }) => {
+export const AurapnlIoComposition: React.FC<AurapnlIoCompositionProps> = ({ data, xHandle, showWallet, walletAddress, language = 'en' }) => {
   const frame = useCurrentFrame();
   const { width, height, fps } = useVideoConfig();
   const t = translations[language];
